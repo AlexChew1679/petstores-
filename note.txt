@@ -1,0 +1,27 @@
+# Heroku should use this version of ruby
+ruby '2.4.0'              #<= CHANGE HERE is to ensure heroku use this version
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '~> 5.0.3'
+# Use sqlite3 as the database for Active Record
+gem 'sqlite3', group: [:development, :test]     #<= CHANGE HERE   , is to ensure sqlite is use for dev only
+# postgress for production DB
+gem 'pg', group: :production        #<= CHANGE HERE   , to ensure postgress is used for production
+#12 factor for heroku
+gem 'rails_12factor', group: :production      #<= CHANGE HERE, to ensure heroku is deployed effectively
+
+
+Deploy to Heroku via terminal :
+
+heroku apps:create alex-petstore ,
+
+but make sure u have push to github 1st before heroku deployment
+
+git push heroku master ,( use git to push to heroku server )
+
+
+goto database.yml
+
+DELETE this line :
+                                production:
+                                  <<: *default
+                                  database: db/production.sqlite3
