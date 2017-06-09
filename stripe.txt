@@ -1,0 +1,75 @@
+gem 'stripe', :git =>'https://github.com/stripe/stripe-ruby'
+
+$AcMonashId
+
+
+at controller folder, create a charges_controller.rb  ( you can get all this code below at https://stripe.com/docs/checkout/rails)
+
+                        class ChargesController < ApplicationController
+
+                          def new
+                          end
+
+                          def create
+                            # Amount in cents
+                            @amount = 500
+
+                            customer = Stripe::Customer.create(
+                              :email => params[:stripeEmail],
+                              :source  => params[:stripeToken]
+                            )
+
+                            charge = Stripe::Charge.create(
+                              :customer    => customer.id,
+                              :amount      => @amount,
+                              :description => 'Rails Stripe customer',
+                              :currency    => 'usd'
+                            )
+
+                          rescue Stripe::CardError => e
+                            flash[:error] = e.message
+                            redirect_to new_charge_path
+                          end
+                        end
+
+config/initializers/ create a new file stripe.rb
+
+                              Rails.configuration.stripe = {
+                                :publishable_key => ENV['PUBLISHABLE_KEY'],
+                                :secret_key      => ENV['SECRET_KEY']
+                              }
+
+                              Stripe.api_key = Rails.configuration.stripe[:secret_key]
+
+
+paste this code at home.html.erb :
+
+
+                              <%= form_tag charges_path do %>
+                                        <article>
+                                          <% if flash[:error].present? %>
+                                            <div id="error_explanation">
+                                              <p><%= flash[:error] %></p>
+                                            </div>
+                                          <% end %>
+                                          <label class="amount">
+                                            <span>Amount: $5.00</span>
+                                          </label>
+                                        </article>
+
+                                        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                                data-key="<%= Rails.configuration.stripe[:publishable_key]%>"
+                                                data-description="A month's subscription"
+                                                data-amount="500"
+                                                data-locale="auto"></script>
+                                      <% end %>
+
+  INSTALL FIGARO
+
+                                            gem 'figaro'
+                                            bundle exec figaro install (it will create application.yml and modify .gitignore)
+
+              paste your ENV file here like below
+
+              PUBLISHABLE_KEY: pk_test
+              SECRET_KEY: sk_test_ 

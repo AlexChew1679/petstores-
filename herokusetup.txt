@@ -25,3 +25,5 @@ DELETE this line :
                                 production:
                                   <<: *default
                                   database: db/production.sqlite3
+
+      narchiii/learnRailsDesign  => ALL THE FRONT END FILE github 
